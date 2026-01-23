@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Eshop Activation Email</title>
+    <style>
+      /* Reset some styles */
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        text-align: center;
+      }
+
+      h1 {
+        color: #1a73e8;
+      }
+
+      .otp {
+        font-size: 32px;
+        font-weight: bold;
+        color: #1a73e8;
+        margin: 20px 0;
+      }
+
+      p {
+        font-size: 16px;
+        line-height: 1.5;
+      }
+
+      .footer {
+        margin-top: 30px;
+        font-size: 12px;
+        color: #888;
+      }
+
+      .button {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: #1a73e8;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        margin-top: 20px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Hello <%= name %>,</h1>
+      <p>
+        Thank you for registering with us! To verify your email address, please
+        use the OTP below:
+      </p>
+      <div class="otp"><%= otp %></div>
+      <p>This OTP is valid for 5 minutes. Do not share it with anyone.</p>
+      <a class="button" href="#">Verify Email</a>
+
+      <div class="footer">
+        &copy; <%= new Date().getFullYear() %> Your Company. All rights
+        reserved.
+      </div>
+    </div>
+  </body>
+</html>
