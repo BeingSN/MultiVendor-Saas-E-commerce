@@ -4,6 +4,8 @@ import { errorMiddleware } from "../../../packages/middleware/error-handler/erro
 import cookieParser from "cookie-parser";
 import router from "./routes/auth-router";
 import swaggerUi from "swagger-ui-express";
+// @ts-ignore - JSON import works at runtime with ESM
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const swaggerDocument = require("./swagger-output.json");
 const app = express();
 

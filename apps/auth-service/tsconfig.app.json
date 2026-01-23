@@ -4,9 +4,10 @@
     "outDir": "dist",
     "types": ["node"],
     "rootDir": "../../",
-    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo"
+    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
+    "resolveJsonModule": true
   },
-  "include": ["src/**/*.ts", "../../packages/**/**.ts", "../../generated/**/*.ts"],
+  "include": ["src/**/*.ts", "../../packages/**/**.ts", "../../generated/**/*.ts", "src/**/*.json"],
   "exclude": [
     "out-tsc",
     "dist",

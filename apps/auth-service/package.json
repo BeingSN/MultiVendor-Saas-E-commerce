@@ -14,7 +14,7 @@
           "platform": "node",
           "outputPath": "apps/auth-service/dist",
           "format": [
-            "cjs"
+            "esm"
           ],
           "bundle": false,
           "main": "apps/auth-service/src/main.ts",
@@ -22,22 +22,33 @@
           "assets": [
             "apps/auth-service/src/assets"
           ],
+          "external": ["@prisma/client", "@prisma/client/runtime*"],
           "esbuildOptions": {
             "sourcemap": true,
             "outExtension": {
               ".js": ".js"
-            }
+            },
+            "format": "esm",
+            "platform": "node",
+            "target": "es2022"
           }
         },
         "configurations": {
-          "development": {},
+          "development": {
+            "watch": true,
+            "format": ["esm"]
+          },
           "production": {
             "generateLockfile": true,
+            "format": ["esm"],
             "esbuildOptions": {
               "sourcemap": false,
               "outExtension": {
                 ".js": ".js"
-              }
+              },
+              "format": "esm",
+              "platform": "node",
+              "target": "es2022"
             }
           }
         }
