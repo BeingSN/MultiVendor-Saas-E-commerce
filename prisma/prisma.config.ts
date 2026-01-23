@@ -1,12 +1,7 @@
-import { defineConfig } from "prisma/config";
+import { defineDatasource } from "@prisma/client";
 
-export default defineConfig({
-  schema: "prisma/schema.prisma",
-
-  migrate: {
-    adapter: {
-      provider: "mongodb",
-      url: process.env.DATABASE_URL,
-    },
-  },
+export const db = defineDatasource({
+  name: "db",
+  provider: "mongodb",
+  adapter: process.env.DATABASE_URL, // your MongoDB URL
 });
