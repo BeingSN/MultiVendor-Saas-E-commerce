@@ -1,14 +1,14 @@
 //Register a new user
 
 import { Request, Response, NextFunction } from "express";
-import { ValidationError } from "../../../../packages/middleware/error-handler";
+import { ValidationError } from "../../../../packages/middleware/error-handler/index.js";
 import {
   checkOtpRestrictions,
   sendOtp,
   trackOtpRequests,
   validateRegisrationData,
-} from "../utils/auth.helper";
-import prisma from "../../../../packages/libs/prisma";
+} from "../utils/auth.helper.js";
+import prisma from "../../../../packages/libs/prisma/index.js";
 
 export const userRegistration = async (
   req: Request,

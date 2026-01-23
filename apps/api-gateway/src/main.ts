@@ -37,7 +37,7 @@ const limiter = rateLimit({
   message: "Too many requests from this IP, please try again later.",
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: (req: any) => req.ip,
+  // Use default keyGenerator which handles IPv6 correctly
 });
 
 app.use(limiter);
@@ -52,4 +52,11 @@ const port = process.env.PORT || 8080;
 const server = app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}/api`);
 });
-server.on("error", console.error);
+server.on("error", (err: any) => {
+  if (err.code === "EADDRINUSE") {
+    console.error(`Port ${port} is already in use. Please stop the other process or use a different port.`);
+  } else {
+    console.error("Server error:", err);
+  }
+  process.exit(1);
+});

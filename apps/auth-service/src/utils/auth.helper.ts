@@ -1,8 +1,8 @@
 import { NextFunction } from "express";
-import { ValidationError } from "../../../../packages/middleware/error-handler";
+import { ValidationError } from "../../../../packages/middleware/error-handler/index.js";
 import crypto from "crypto";
-import redis from "../../../../packages/redis";
-import { sendEmail } from "./sendMail";
+import redis from "../../../../packages/redis/index.js";
+import { sendEmail } from "./sendMail/index.js";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

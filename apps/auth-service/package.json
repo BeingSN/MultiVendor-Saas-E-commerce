@@ -2,6 +2,7 @@
   "name": "@my-workspace-name/auth-service",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "nx": {
     "targets": {
       "build": {
@@ -14,11 +15,12 @@
           "platform": "node",
           "outputPath": "apps/auth-service/dist",
           "format": [
-            "esm"
+            "cjs"
           ],
-          "bundle": false,
+          "bundle": true,
           "main": "apps/auth-service/src/main.ts",
           "tsConfig": "apps/auth-service/tsconfig.app.json",
+          "outputFileName": "main.js",
           "assets": [
             "apps/auth-service/src/assets"
           ],
@@ -28,7 +30,7 @@
             "outExtension": {
               ".js": ".js"
             },
-            "format": "esm",
+            "format": "cjs",
             "platform": "node",
             "target": "es2022"
           }
@@ -36,17 +38,17 @@
         "configurations": {
           "development": {
             "watch": true,
-            "format": ["esm"]
+            "format": ["cjs"]
           },
           "production": {
             "generateLockfile": true,
-            "format": ["esm"],
+            "format": ["cjs"],
             "esbuildOptions": {
               "sourcemap": false,
               "outExtension": {
                 ".js": ".js"
               },
-              "format": "esm",
+              "format": "cjs",
               "platform": "node",
               "target": "es2022"
             }
@@ -96,7 +98,10 @@
         ],
         "options": {
           "buildTarget": "@my-workspace-name/auth-service:build",
-          "runBuildTargetDependencies": false
+          "runBuildTargetDependencies": false,
+          "waitUntilTargets": [],
+          "host": "localhost",
+          "port": 6001
         },
         "configurations": {
           "development": {

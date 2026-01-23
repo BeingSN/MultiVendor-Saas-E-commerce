@@ -1,12 +1,28 @@
 import express from "express";
 import cors from "cors";
-import { errorMiddleware } from "../../../packages/middleware/error-handler/error-middleware";
+import dotenv from "dotenv";
+import { errorMiddleware } from "../../../packages/middleware/error-handler/error-middleware.js";
 import cookieParser from "cookie-parser";
-import router from "./routes/auth-router";
+import router from "./routes/auth-router.js";
 import swaggerUi from "swagger-ui-express";
-// @ts-ignore - JSON import works at runtime with ESM
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const swaggerDocument = require("./swagger-output.json");
+import { readFileSync } from "fs";
+import { join } from "path";
+
+// Load environment variables
+dotenv.config();
+
+// Load swagger document - path works from dist folder at runtime
+const swaggerPath = join(
+  process.cwd(),
+  "apps",
+  "auth-service",
+  "dist",
+  "apps",
+  "auth-service",
+  "src",
+  "swagger-output.json"
+);
+const swaggerDocument = JSON.parse(readFileSync(swaggerPath, "utf-8"));
 const app = express();
 
 app.use(

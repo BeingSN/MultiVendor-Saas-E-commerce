@@ -1,13 +1,14 @@
 import { Response, Request } from "express";
-import { AppError } from ".";
+import { AppError } from "./index.js";
 
 export const errorMiddleware = (err: Error, req: Request, res: Response) => {
   if (err instanceof AppError) {
-    console.log(`Error ${req.method} ${req.url} - ${err.message}`);
-    return res.status(err.statusCode).json({
+    const appError = err as AppError;
+    console.log(`Error ${req.method} ${req.url} - ${appError.message}`);
+    return res.status(appError.statusCode).json({
       status: "error",
-      message: err.message,
-      ...(err.details && { details: err.details }),
+      message: appError.message,
+      ...(appError.details && { details: appError.details }),
     });
   }
   console.log("Unhandled error:", err);
