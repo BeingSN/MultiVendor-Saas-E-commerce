@@ -11,16 +11,13 @@ import { join } from "path";
 // Load environment variables
 dotenv.config();
 
-// Load swagger document - path works from dist folder at runtime
+// Read from source directory instead of dist
 const swaggerPath = join(
   process.cwd(),
   "apps",
   "auth-service",
-  "dist",
-  "apps",
-  "auth-service",
   "src",
-  "swagger-output.json"
+  "swagger-output.json",
 );
 const swaggerDocument = JSON.parse(readFileSync(swaggerPath, "utf-8"));
 const app = express();
@@ -55,7 +52,7 @@ const port = process.env.PORT || 6001;
 
 const server = app.listen(port, () => {
   console.log(`Auth service is running on port ${port}`);
-  console.log(`Swagger Docs available at http://localhost:${port}/docs`);
+  console.log(`Swagger Docs available at http://localhost:${port}/api-docs`);
 });
 
 server.on("error", console.error);

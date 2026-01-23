@@ -3,6 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "scripts": {
+    "build": "nx build @my-workspace-name/auth-service",
+    "serve": "nx serve @my-workspace-name/auth-service",
+    "lint": "nx lint @my-workspace-name/auth-service",
+    "test": "nx test @my-workspace-name/auth-service"
+  },
   "nx": {
     "targets": {
       "build": {
@@ -15,7 +21,7 @@
           "platform": "node",
           "outputPath": "apps/auth-service/dist",
           "format": [
-            "cjs"
+            "esm"
           ],
           "bundle": true,
           "main": "apps/auth-service/src/main.ts",
@@ -24,13 +30,16 @@
           "assets": [
             "apps/auth-service/src/assets"
           ],
-          "external": ["@prisma/client", "@prisma/client/runtime*"],
+          "external": [
+            "@prisma/client",
+            "@prisma/client/runtime*"
+          ],
           "esbuildOptions": {
             "sourcemap": true,
             "outExtension": {
               ".js": ".js"
             },
-            "format": "cjs",
+            "format": "esm",
             "platform": "node",
             "target": "es2022"
           }
@@ -38,56 +47,26 @@
         "configurations": {
           "development": {
             "watch": true,
-            "format": ["cjs"]
+            "format": [
+              "esm"
+            ]
           },
           "production": {
             "generateLockfile": true,
-            "format": ["cjs"],
+            "format": [
+              "esm"
+            ],
             "esbuildOptions": {
               "sourcemap": false,
               "outExtension": {
                 ".js": ".js"
               },
-              "format": "cjs",
+              "format": "esm",
               "platform": "node",
               "target": "es2022"
             }
           }
         }
-      },
-      "prune-lockfile": {
-        "dependsOn": [
-          "build"
-        ],
-        "cache": true,
-        "executor": "@nx/js:prune-lockfile",
-        "outputs": [
-          "{workspaceRoot}/apps/auth-service/dist/package.json",
-          "{workspaceRoot}/apps/auth-service/dist/package-lock.json"
-        ],
-        "options": {
-          "buildTarget": "build"
-        }
-      },
-      "copy-workspace-modules": {
-        "dependsOn": [
-          "build"
-        ],
-        "cache": true,
-        "outputs": [
-          "{workspaceRoot}/apps/auth-service/dist/workspace_modules"
-        ],
-        "executor": "@nx/js:copy-workspace-modules",
-        "options": {
-          "buildTarget": "build"
-        }
-      },
-      "prune": {
-        "dependsOn": [
-          "prune-lockfile",
-          "copy-workspace-modules"
-        ],
-        "executor": "nx:noop"
       },
       "serve": {
         "continuous": true,
@@ -98,10 +77,7 @@
         ],
         "options": {
           "buildTarget": "@my-workspace-name/auth-service:build",
-          "runBuildTargetDependencies": false,
-          "waitUntilTargets": [],
-          "host": "localhost",
-          "port": 6001
+          "runBuildTargetDependencies": false
         },
         "configurations": {
           "development": {
@@ -111,21 +87,28 @@
             "buildTarget": "@my-workspace-name/auth-service:build:production"
           }
         }
-      },
-      "test": {
-        "options": {
-          "passWithNoTests": true
-        }
-      },
-      "docker:build": {
-        "dependsOn": [
-          "build",
-          "prune"
-        ]
       }
     }
   },
   "dependencies": {
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "ioredis": "^5.9.2",
+    "@prisma/client": "^7.3.0",
+    "dotenv": "^17.2.3",
+    "ejs": "^4.0.1",
+    "nodemailer": "^7.0.12",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "@nx/esbuild": "22.4.0",
+    "@nx/js": "22.4.0",
+    "@nx/node": "22.4.0",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.19.9",
+    "@types/nodemailer": "^7.0.5",
+    "esbuild": "^0.19.2",
+    "ts-node": "10.9.1",
+    "typescript": "~5.9.2"
   }
 }
