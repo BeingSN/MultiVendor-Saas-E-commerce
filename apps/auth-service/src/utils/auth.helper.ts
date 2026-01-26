@@ -1,8 +1,10 @@
-import { NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { ValidationError } from "../../../../packages/middleware/error-handler/index.js";
 import crypto from "crypto";
 import redis from "../../../../packages/redis/index.js";
 import { sendEmail } from "./sendMail/index.js";
+import prisma from "../../../../packages/libs/prisma/index.js";
+import bcrypt from "bcryptjs";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -86,7 +88,7 @@ export const verifyOtp = async (
   otp: string,
   next: NextFunction,
 ) => {
-  const storedOtp = redis.get(`otp${email}`);
+  const storedOtp = await redis.get(`otp:${email}`);
 
   if (!storedOtp) {
     throw new ValidationError("Invalid or expired OTP");
@@ -99,16 +101,33 @@ export const verifyOtp = async (
     if (failedAttempts > 2) {
       await redis.set(`otp_lock:${email}`, "locked", "EX", 1800);
       await redis.del(`otp:${email}`, failedAttemptsKey);
-      throw (
-        new ValidationError(
-          "Too many failed attempts. Your account is locked for 30 minutes",
-        ),
+      throw new ValidationError(
+        "Too many failed attempts. Your account is locked for 30 minutes",
       );
     }
     await redis.set(failedAttemptsKey, failedAttempts + 1, "EX", 300);
-    throw(
-      new ValidationError(`Incorrect OTP. ${2 - failedAttempts} attempts left`),
+    throw new ValidationError(
+      `Incorrect OTP. ${2 - failedAttempts} attempts left`,
     );
   }
   await redis.del(`otp:${email}`, failedAttemptsKey);
+};
+
+export const verifyForgotPasswordOtp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+      throw new ValidationError("Email and OTP are required");
+    }
+
+    await verifyOtp(email, otp, next);
+
+    res.status(200).json({
+      message: "OTP verified. you can now reset your password",
+    });
+  } catch (err) {}
 };

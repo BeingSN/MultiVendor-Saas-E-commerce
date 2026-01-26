@@ -1,5 +1,3 @@
-//Register a new user
-
 import { Request, Response, NextFunction } from "express";
 import {
   AuthenticationError,
@@ -10,10 +8,12 @@ import {
   sendOtp,
   trackOtpRequests,
   validateRegisrationData,
+  verifyForgotPasswordOtp,
   verifyOtp,
 } from "../utils/auth.helper.js";
 import prisma from "../../../../packages/libs/prisma/index.js";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import { setCookie } from "../utils/cookies/setCookie.js";
 
 export const userRegistration = async (
@@ -61,17 +61,17 @@ export const verifyUser = async (
     }
     await verifyOtp(email, otp, next);
 
-    const hashedPassword = await bcrypt.hash(passowrd, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = prisma.user.create({
-      data: { name, email, password, hashedPassword },
+    await prisma.user.create({
+      data: { name, email, password: hashedPassword },
     });
 
     res
       .status(201)
       .json({ success: true, message: "User registered successfully!" });
   } catch (err) {
-    return next(error);
+    return next(err);
   }
 };
 
@@ -91,7 +91,7 @@ export const loginUser = async (
       where: { email },
     });
 
-    if (!user) {
+    if (!user || !user.password) {
       return next(new AuthenticationError("Invalid email or password"));
     }
 
@@ -105,7 +105,7 @@ export const loginUser = async (
 
     const accessToken = jwt.sign(
       { id: user.id, role: "User" },
-      proccess.env.ACCESS_TOKEN_SECRET as string,
+      process.env.ACCESS_TOKEN_SECRET as string,
       {
         expiresIn: "15m",
       },
@@ -113,7 +113,7 @@ export const loginUser = async (
 
     const refreshToken = jwt.sign(
       { id: user.id, role: "User" },
-      proccess.env.REFRESH_TOKEN_SECRET as string,
+      process.env.REFRESH_TOKEN_SECRET as string,
       {
         expiresIn: "7d",
       },
@@ -124,10 +124,108 @@ export const loginUser = async (
     setCookie(res, "access-token", accessToken);
 
     res.status(200).json({
-      message: "Login ssuccessful!",
+      message: "Login successful!",
       user: { id: user.id, email: user.email, name: user.name },
     });
   } catch (error) {
     return next(error);
+  }
+};
+
+// user fotgot password
+
+export const userForgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  await handleForgotPassword(req, res, next, "user");
+};
+
+export const handleForgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+  userType: "user" | "seller",
+) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      throw new ValidationError("email is requried");
+    }
+
+    const user =
+      userType === "user" &&
+      (await prisma.user.findUnique({ where: { email } }));
+
+    if (!user) {
+      throw new ValidationError(`${userType} not found!`);
+    }
+
+    //check otp restrictions
+
+    await checkOtpRestrictions(email, next);
+    await trackOtpRequests(email, next);
+
+    //Generate OTP and send Email
+
+    await sendOtp(email, user.name, "forgot-password-user-mail");
+    res
+      .status(200)
+      .json({ message: "OTP send to email, please verify your account" });
+  } catch (err) {}
+};
+
+//verify forget password otp
+export const verifyUserForgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  await verifyForgotPasswordOtp(req, res, next);
+};
+
+export const resetUserPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { email, newPassword } = req.body;
+
+    if (!email || !newPassword) {
+      throw new ValidationError("Email and password are required");
+    }
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+      return next(new ValidationError("user not found"));
+    }
+
+    if (!user.password) {
+      return next(new ValidationError("User password not set"));
+    }
+
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+    if (isSamePassword) {
+      return next(
+        new ValidationError(
+          "New password cannot be the same as the old password",
+        ),
+      );
+    }
+
+    //hash the new pwd
+
+    const hasedPassword = await bcrypt.hash(newPassword, 10);
+
+    await prisma.user.update({
+      where: { email },
+      data: { password: hasedPassword },
+    });
+    return res.status(200).json({ message: "Password reset successfully!" });
+  } catch (err) {
+    return next(err);
   }
 };
