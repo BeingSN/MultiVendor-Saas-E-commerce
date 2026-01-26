@@ -1,37 +1,42 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "title": "Auth Service API",
     "description": "Automatically generated Swagger docs",
     "version": "1.0.0"
   },
-  "host": "localhost:6001",
-  "basePath": "/",
-  "schemes": ["http"],
+  "servers": [
+    {
+      "url": "http://localhost:6001/api"
+    }
+  ],
   "paths": {
-    "/api/user-registration": {
+    "/user-registration": {
       "post": {
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "Mohammad Shahmeer"
-                },
-                "email": {
-                  "example": "abc@gmail.com"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/verify-user": {
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/login-user": {
+      "post": {
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
           }
         }
       }
