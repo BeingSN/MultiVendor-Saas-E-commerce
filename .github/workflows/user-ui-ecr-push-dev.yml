@@ -1,23 +1,16 @@
-name: Build and Push user-ui to ECR
+name: Build and Push user-ui to ECR (Dev)
 
 on:
   push:
     branches:
-      - main
       - develop
     paths:
       - "apps/user-ui/**"
-      - ".github/workflows/user-ui-ecr-push.yml"
-  pull_request:
-    branches:
-      - main
-      - develop
-    paths:
-      - "apps/user-ui/**"
+      - ".github/workflows/user-ui-ecr-push-dev.yml"
 
 env:
-  AWS_REGION: us-east-1
-  IMAGE_NAME: user-ui
+  AWS_REGION: us-west-1
+  IMAGE_NAME: user-ui-dev
 
 jobs:
   build-and-push:
@@ -33,7 +26,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
