@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nx build @my-workspace-name/auth-service",
+    "build": "node init && nx build @my-workspace-name/auth-service",
     "serve": "nx serve @my-workspace-name/auth-service",
     "lint": "nx lint @my-workspace-name/auth-service",
     "test": "nx test @my-workspace-name/auth-service"
