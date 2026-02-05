@@ -1,12 +1,16 @@
 name: Build and Push user-ui to ECR (Dev)
 
 on:
-  push:
-    branches:
-      - develop
-    paths:
-      - "apps/user-ui/**"
-      - ".github/workflows/user-ui-ecr-push-dev.yml"
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to build and push"
+        required: true
+        default: "develop"
+        type: choice
+        options:
+          - develop
+          - main
 
 env:
   AWS_REGION: us-west-1
