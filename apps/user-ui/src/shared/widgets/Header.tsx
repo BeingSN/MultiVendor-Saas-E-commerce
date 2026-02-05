@@ -3,6 +3,8 @@ import ProfileIcon from "@/assets/svgs/profile-icon";
 import { HeartIcon, Search } from "lucide-react";
 import Link from "next/link";
 import React from "react";
+import CartIcon from "../../assets/svgs/cart-icon";
+import HeaderBottom from "./HeaderBottom";
 
 const Header = () => {
   return (
@@ -38,11 +40,23 @@ const Header = () => {
             </Link>
           </div>
           <div className="flex items-center gap-5 ">
-            <Link href={"wishlist"} className="relative">
+            <Link href={"/wishlist"} className="relative">
               <WishlistHeartIcon />
+              <div className="w-6 h-6 border-2 border-white bg-red-500 rounded-full flex items-center justify-center absolute top-[-10px] right-[-10px]">
+                <span className="text-white font-medium text-sm">0</span>
+              </div>
+            </Link>
+            <Link href={"/cart"} className="relative">
+              <CartIcon />
+              <div className="w-6 h-6 border-2 border-white bg-red-500 rounded-full flex items-center justify-center absolute top-[-10px] right-[-10px]">
+                <span className="text-white font-medium text-sm">0</span>
+              </div>
             </Link>
           </div>
         </div>
+      </div>
+      <div className="border-b border-b-[#99999938]">
+        <HeaderBottom />
       </div>
     </div>
   );
