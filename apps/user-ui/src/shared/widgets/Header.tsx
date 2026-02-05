@@ -1,6 +1,6 @@
 import WishlistHeartIcon from "@/assets/svgs/heart-icon";
 import ProfileIcon from "@/assets/svgs/profile-icon";
-import { HeartIcon, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import CartIcon from "../../assets/svgs/cart-icon";
